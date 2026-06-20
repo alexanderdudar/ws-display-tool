@@ -250,13 +250,14 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
                       </span>
                       <button
                         onClick={(e) => { e.stopPropagation(); setConsolidate(!consolidate); }}
-                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] transition-colors ${
+                        className={`inline-flex items-center gap-1 text-[11px] font-medium transition-colors ${
                           consolidate
-                            ? "bg-[#0071e3] text-white"
-                            : "bg-[#f5f5f7] dark:bg-white/10 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
+                            ? "text-[#0071e3]"
+                            : "text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
                         }`}
                       >
-                        <Layers className="w-3 h-3" />
+                        <Layers className="w-3.5 h-3.5" />
+                        Consolidate
                       </button>
                     </span>
                   ) : (
