@@ -25,7 +25,7 @@ const SECTOR_MAP: Record<string, string> = {
   EA: "Technology", TTWO: "Technology", WBD: "Technology",
   FOX: "Technology", NWS: "Technology", FWONA: "Technology",
   FWONK: "Technology", Z: "Technology", GDDY: "Technology",
-  EBAY: "Technology",
+  EBAY: "Technology", ASTS: "Technology",
 
   // Financial Services
   JPM: "Financial Services", BAC: "Financial Services", WFC: "Financial Services",
@@ -122,6 +122,7 @@ const SECTOR_MAP: Record<string, string> = {
   KIM: "Real Estate & Utilities", WPC: "Real Estate & Utilities",
 
   // ETFs — classified by dominant sector exposure
+  SMH: "Technology",    // VanEck Semiconductor ETF → 100% tech
   SOXL: "Technology",   // 3x leveraged semiconductors → 100% tech
   QQC: "Technology",    // Nasdaq 100 → ~55% tech dominant
   QQQ: "Technology",    // Nasdaq 100 → ~55% tech dominant
