@@ -157,20 +157,17 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
   return (
     <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[18px] border border-black/5 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[15px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
-          All Positions
-        </h2>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86868b]" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search positions..."
+            className="pl-9 pr-4 py-2 rounded-full bg-[#f5f5f7] dark:bg-white/10 text-[14px] text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] border-none w-72 focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30"
+          />
+        </div>
         <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#86868b]" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="pl-8 pr-3 py-1.5 rounded-full bg-[#f5f5f7] dark:bg-white/10 text-[13px] text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] border-none w-40 focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30"
-            />
-          </div>
           <div className="relative">
             <button
               onClick={() => setShowColumnPicker(!showColumnPicker)}
@@ -179,17 +176,24 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
               <Settings2 className="w-4 h-4 text-[#86868b]" />
             </button>
             {showColumnPicker && (
-              <div className="absolute right-0 top-10 z-50 bg-white dark:bg-[#1d1d1f] rounded-xl shadow-xl border border-black/10 dark:border-white/10 p-3 min-w-[160px]">
+              <div className="absolute right-0 top-10 z-50 bg-white dark:bg-[#1c1c1e] rounded-xl shadow-xl border border-black/10 dark:border-white/10 p-2 min-w-[180px]">
                 {ALL_COLUMNS.map((col) => (
-                  <label key={col.key} className="flex items-center gap-2 py-1 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={visibleCols.has(col.key)}
-                      onChange={() => toggleColumn(col.key)}
-                      className="rounded accent-[#0071e3]"
-                    />
+                  <div
+                    key={col.key}
+                    onClick={() => toggleColumn(col.key)}
+                    className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors select-none"
+                  >
+                    <div className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 transition-all ${
+                      visibleCols.has(col.key) ? "bg-[#0071e3]" : "border border-[#c7c7cc] dark:border-white/25"
+                    }`}>
+                      {visibleCols.has(col.key) && (
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </div>
                     <span className="text-[13px] text-[#1d1d1f] dark:text-[#f5f5f7]">{col.label}</span>
-                  </label>
+                  </div>
                 ))}
               </div>
             )}
@@ -197,7 +201,7 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[13px]">
+        <table className="w-full text-[14px]">
           <thead>
             <tr className="border-b border-black/5 dark:border-white/10">
               {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => (
