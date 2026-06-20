@@ -34,7 +34,6 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
       return aggregateBySymbol(holdings, currency)
         .filter((p) => p.totalValue > 0)
         .sort((a, b) => b.totalValue - a.totalValue)
-        .slice(0, 14)
         .map((p, i) => ({
           name: p.symbol,
           value: p.totalValue,
