@@ -17,7 +17,7 @@ const SECTOR_MAP: Record<string, string> = {
   ANSS: "Technology", ZBRA: "Technology", STX: "Technology", WDC: "Technology",
   MSTR: "Technology", APP: "Technology", CRWV: "Technology", ALAB: "Technology",
   GLW: "Technology", TEL: "Technology", APH: "Technology", VRT: "Technology",
-  HOOD: "Technology", RKLB: "Technology", GRMN: "Technology", VRSK: "Technology",
+  HOOD: "Technology", RKLB: "Technology", GRMN: "Technology", VRSK: "Technology", TSM: "Technology",
   VRSN: "Technology", CLSK: "Technology", NBIS: "Technology",
   // Communication / Media → Technology
   NFLX: "Technology", DIS: "Technology", CMCSA: "Technology",
