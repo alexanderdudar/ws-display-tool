@@ -41,7 +41,7 @@ const SECTOR_MAP: Record<string, string> = {
   ARES: "Financial Services", KKR: "Financial Services", ALL: "Financial Services",
   TRV: "Financial Services", HIG: "Financial Services", AFL: "Financial Services",
   MET: "Financial Services", CINF: "Financial Services", WRB: "Financial Services",
-  ACGL: "Financial Services", XYZ: "Financial Services", SOFI: "Financial Services",
+  ACGL: "Financial Services", XYZ: "Financial Services", SOFI: "Financial Services", WTW: "Financial Services",
 
   // Healthcare
   UNH: "Healthcare", JNJ: "Healthcare", LLY: "Healthcare", MRK: "Healthcare",
@@ -53,7 +53,7 @@ const SECTOR_MAP: Record<string, string> = {
   IQV: "Healthcare", DGX: "Healthcare", LH: "Healthcare", INCY: "Healthcare",
   INSM: "Healthcare", PODD: "Healthcare", STE: "Healthcare", WST: "Healthcare",
   A: "Healthcare", WAT: "Healthcare", RPRX: "Healthcare", COO: "Healthcare",
-  MDLN: "Healthcare",
+  MDLN: "Healthcare", ZTS: "Healthcare",
 
   // Consumer (cyclical + defensive merged)
   AMZN: "Consumer", TSLA: "Consumer", HD: "Consumer",
