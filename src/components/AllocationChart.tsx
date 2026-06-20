@@ -134,7 +134,7 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
               {hidden ? "•••" : formatChartValue(d.value, currency, false)}
             </span>
             <span className="text-[#1d1d1f] dark:text-[#f5f5f7] tabular-nums w-12 text-right flex-shrink-0">
-              {hidden ? "••" : `${((d.value / total) * 100).toFixed(1)}%`}
+              {`${((d.value / total) * 100).toFixed(1)}%`}
             </span>
           </div>
         ))}

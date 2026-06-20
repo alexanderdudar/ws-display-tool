@@ -133,6 +133,7 @@ const SECTOR_MAP: Record<string, string> = {
   VOO: "Other",         // S&P 500 — fully diversified
   SPY: "Other",         // S&P 500 — fully diversified
   SVR: "Industrials",   // Silver bullion — commodity
+  CGL: "Industrials",   // iShares Canadian Gold Index ETF — commodity
   PSA: "Financial Services",   // Purpose HISA — held in PE account
   WSE300: "Financial Services", // WS Private Equity fund
 };
