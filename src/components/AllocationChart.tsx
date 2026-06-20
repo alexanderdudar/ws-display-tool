@@ -34,7 +34,7 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
       return aggregateBySymbol(holdings, currency)
         .filter((p) => p.totalValue > 0)
         .sort((a, b) => b.totalValue - a.totalValue)
-        .slice(0, 15)
+        .slice(0, 14)
         .map((p, i) => ({
           name: p.symbol,
           value: p.totalValue,
@@ -71,10 +71,10 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
   }, [holdings, currency, view]);
 
   const chartData = useMemo(() => {
-    if (data.length <= 15) return data;
+    if (data.length <= 14) return data;
 
-    const top = data.slice(0, 14);
-    const rest = data.slice(14);
+    const top = data.slice(0, 13);
+    const rest = data.slice(13);
     const otherValue = rest.reduce((s, d) => s + d.value, 0);
     return [...top, { name: "Other", value: otherValue, color: "#636366" }];
   }, [data]);
@@ -112,7 +112,7 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex-1 space-y-1 overflow-y-auto max-h-full py-2">
+      <div className="flex-1 space-y-1 max-h-full py-2 overflow-hidden">
         {chartData.map((d) => (
           <div key={d.name} className="flex items-center gap-2 text-[14px]">
             <div
