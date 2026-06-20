@@ -200,7 +200,7 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setConsolidate(!consolidate)}
-            className={`flex items-center gap-1.5 text-[13px] font-medium transition-colors ${
+            className={`flex items-center gap-1.5 text-[14px] font-medium transition-colors ${
               consolidate
                 ? "text-[#0071e3]"
                 : "text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
