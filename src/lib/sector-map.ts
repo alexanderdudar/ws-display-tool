@@ -133,8 +133,11 @@ const SECTOR_MAP: Record<string, string> = {
   VFV: "Other",         // S&P 500 — fully diversified
   VOO: "Other",         // S&P 500 — fully diversified
   SPY: "Other",         // S&P 500 — fully diversified
-  SVR: "Industrials",   // Silver bullion — commodity
-  CGL: "Industrials",   // iShares Canadian Gold Index ETF — commodity
+  SVR: "Commodities",   // Silver bullion
+  SBT: "Commodities",   // Silver bullion trust
+  SLV: "Commodities",   // iShares Silver Trust
+  GLD: "Commodities",   // SPDR Gold Trust
+  CGL: "Commodities",   // iShares Canadian Gold Index ETF
   PSA: "Financial Services",   // Purpose HISA — held in PE account
   WSE300: "Financial Services", // WS Private Equity fund
 };
@@ -153,6 +156,7 @@ export function getAllSectors(): string[] {
     "Industrials",
     "Energy",
     "Real Estate & Utilities",
+    "Commodities",
     "Other",
   ];
 }
