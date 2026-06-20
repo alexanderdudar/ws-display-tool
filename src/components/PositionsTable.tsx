@@ -207,7 +207,7 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            Consolidate
+            Consolidate Accounts
           </button>
           <div className="relative">
             <button
