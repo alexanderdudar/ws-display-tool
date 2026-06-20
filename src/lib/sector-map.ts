@@ -129,7 +129,7 @@ const SECTOR_MAP: Record<string, string> = {
   MTRX: "Technology",   // AI infrastructure → ~90% tech
   EUV: "Technology",    // Lithography & semi photonics → 100% tech
   QTUM: "Technology",   // Quantum computing / AI → ~90% tech
-  SSPC: "Other",        // 2x short SPAC — speculative
+  SSPC: "Technology",   // 2x short SPAC
   VFV: "Other",         // S&P 500 — fully diversified
   VOO: "Other",         // S&P 500 — fully diversified
   SPY: "Other",         // S&P 500 — fully diversified
