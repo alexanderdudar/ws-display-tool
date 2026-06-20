@@ -25,7 +25,7 @@ const SECTOR_MAP: Record<string, string> = {
   EA: "Technology", TTWO: "Technology", WBD: "Technology",
   FOX: "Technology", NWS: "Technology", FWONA: "Technology",
   FWONK: "Technology", Z: "Technology", GDDY: "Technology",
-  EBAY: "Technology", ASTS: "Technology",
+  EBAY: "Technology", ASTS: "Technology", MELI: "Technology",
 
   // Financial Services
   JPM: "Financial Services", BAC: "Financial Services", WFC: "Financial Services",
@@ -88,7 +88,7 @@ const SECTOR_MAP: Record<string, string> = {
   AJG: "Industrials", AON: "Industrials", MMM: "Industrials", EME: "Industrials",
   FIX: "Industrials", JCI: "Industrials", XYL: "Industrials", AXON: "Industrials",
   "HEI.A": "Industrials", CARR: "Industrials", VLTO: "Industrials",
-  ALLE: "Industrials", RSG: "Industrials", WM: "Industrials",
+  ALLE: "Industrials", RSG: "Industrials", WM: "Industrials", ROP: "Industrials",
   // Basic Materials → Industrials
   LIN: "Industrials", APD: "Industrials", SHW: "Industrials",
   NEM: "Industrials", NUE: "Industrials", STLD: "Industrials",
