@@ -5,8 +5,9 @@ const SECTOR_COLORS: Record<string, string> = {
   Consumer: "#ff9500",
   Industrials: "#5ac8fa",
   Energy: "#ff3b30",
-  "Real Estate & Utilities": "#30d158",
-  Other: "#ff6482",
+  "Real Estate & Utilities": "#5856d6",
+  Commodities: "#d4a017",
+  Other: "#636366",
 };
 
 export const CHART_COLORS = [
