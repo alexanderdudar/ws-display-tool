@@ -71,17 +71,11 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
   }, [holdings, currency, view]);
 
   const chartData = useMemo(() => {
-    const withoutOther = data.filter((d) => d.name !== "Other");
-    const existingOther = data.find((d) => d.name === "Other");
+    if (data.length <= 15) return data;
 
-    if (withoutOther.length <= 14) {
-      if (existingOther) return [...withoutOther, existingOther];
-      return withoutOther;
-    }
-
-    const top = withoutOther.slice(0, 14);
-    const rest = withoutOther.slice(14);
-    const otherValue = rest.reduce((s, d) => s + d.value, 0) + (existingOther?.value || 0);
+    const top = data.slice(0, 14);
+    const rest = data.slice(14);
+    const otherValue = rest.reduce((s, d) => s + d.value, 0);
     return [...top, { name: "Other", value: otherValue, color: "#636366" }];
   }, [data]);
 
