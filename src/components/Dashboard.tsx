@@ -87,7 +87,7 @@ export function Dashboard({ holdings, onReupload }: Props) {
           <AllocationChart holdings={filtered} currency={currency} hidden={hidden} viewMode={viewMode} />
           <TreemapChart holdings={filtered} currency={currency} hidden={hidden} viewMode={viewMode} />
           <HoldingsSizeChart holdings={filtered} currency={currency} hidden={hidden} viewMode={viewMode} />
-          <PnlWaterfall holdings={filtered} currency={currency} hidden={hidden} />
+          <PnlWaterfall holdings={filtered} currency={currency} hidden={hidden} viewMode={viewMode} />
         </div>
         <PositionsTable holdings={filtered} currency={currency} hidden={hidden} />
       </main>

@@ -120,7 +120,7 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
       </div>
       <div className="flex-1 space-y-1 overflow-y-auto max-h-full py-2">
         {chartData.map((d) => (
-          <div key={d.name} className="flex items-center gap-2 text-[13px]">
+          <div key={d.name} className="flex items-center gap-2 text-[14px]">
             <div
               className="w-2.5 h-2.5 rounded-full flex-shrink-0"
               style={{ background: d.color }}

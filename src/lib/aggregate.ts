@@ -22,7 +22,9 @@ export function aggregateBySymbol(
   >();
 
   for (const h of holdings) {
-    const key = h.symbol.split(" ")[0];
+    const ticker = h.symbol.split(" ")[0];
+    const isOption = h.securityType === "OPTION";
+    const key = isOption ? `${ticker} (Options)` : ticker;
     const value = getValueInCurrency(h, currency);
     const pnl = getPnlInCurrency(h, currency);
     const bv = currency === "CAD" ? h.bookValueCAD : h.bookValueMarket;
@@ -34,7 +36,7 @@ export function aggregateBySymbol(
       existing.bookValue += bv;
     } else {
       map.set(key, {
-        name: h.name || key,
+        name: h.name || ticker,
         securityType: h.securityType,
         sector: h.sector || "Other",
         value,

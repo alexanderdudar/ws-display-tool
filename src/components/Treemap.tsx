@@ -34,7 +34,7 @@ function truncateLabel(name: string, maxChars: number): string {
 function CustomContent({ x = 0, y = 0, width = 0, height = 0, name = "", color = "#0071e3", depth = 0 }: TreemapContentProps) {
   if (depth === 0) return null;
 
-  const fontSize = width > 100 ? 12 : width > 60 ? 10 : 9;
+  const fontSize = width > 120 ? 15 : width > 80 ? 13 : 11;
   const maxChars = Math.floor(width / (fontSize * 0.6));
   const showLabel = width > 35 && height > 18 && maxChars >= 2;
 
