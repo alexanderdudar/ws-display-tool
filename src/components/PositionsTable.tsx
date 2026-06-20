@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronUp, ChevronDown, Settings2, Search } from "lucide-react";
+import { ChevronUp, ChevronDown, Settings2, Search, Layers } from "lucide-react";
 import { Holding, Currency, SECURITY_TYPE_MAP, getAccountDisplayName } from "@/lib/types";
 import { getValueInCurrency, getPnlInCurrency } from "@/lib/hooks";
 
@@ -64,15 +64,45 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [search, setSearch] = useState("");
   const [showColumnPicker, setShowColumnPicker] = useState(false);
+  const [consolidate, setConsolidate] = useState(false);
   const [visibleCols, setVisibleCols] = useState<Set<SortKey>>(
     new Set(ALL_COLUMNS.filter((c) => c.default).map((c) => c.key))
   );
 
+  const consolidatedHoldings = useMemo(() => {
+    if (!consolidate) return holdings;
+    const map = new Map<string, Holding>();
+    for (const h of holdings) {
+      const key = h.symbol;
+      const existing = map.get(key);
+      if (existing) {
+        const totalQty = existing.quantity + h.quantity;
+        const avgPrice = totalQty !== 0
+          ? (existing.marketPrice * existing.quantity + h.marketPrice * h.quantity) / totalQty
+          : 0;
+        map.set(key, {
+          ...existing,
+          quantity: totalQty,
+          marketPrice: avgPrice,
+          marketValue: existing.marketValue + h.marketValue,
+          bookValueCAD: existing.bookValueCAD + h.bookValueCAD,
+          bookValueMarket: existing.bookValueMarket + h.bookValueMarket,
+          unrealizedReturn: existing.unrealizedReturn + h.unrealizedReturn,
+          accountName: "Multiple",
+          accountType: "Combined",
+        });
+      } else {
+        map.set(key, { ...h });
+      }
+    }
+    return Array.from(map.values());
+  }, [holdings, consolidate]);
+
   const rows = useMemo(() => {
-    let filtered = holdings;
+    let filtered = consolidatedHoldings;
     if (search) {
       const q = search.toLowerCase();
-      filtered = holdings.filter(
+      filtered = consolidatedHoldings.filter(
         (h) =>
           h.symbol.toLowerCase().includes(q) ||
           h.name.toLowerCase().includes(q)
@@ -128,7 +158,7 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
         }
         return sortDir === "asc" ? cmp : -cmp;
       });
-  }, [holdings, currency, sortKey, sortDir, search]);
+  }, [consolidatedHoldings, currency, sortKey, sortDir, search]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -168,6 +198,17 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
           />
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setConsolidate(!consolidate)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium transition-colors ${
+              consolidate
+                ? "bg-[#0071e3] text-white"
+                : "bg-[#f5f5f7] dark:bg-white/10 text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            Consolidate
+          </button>
           <div className="relative">
             <button
               onClick={() => setShowColumnPicker(!showColumnPicker)}
