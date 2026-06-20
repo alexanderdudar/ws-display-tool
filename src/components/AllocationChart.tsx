@@ -126,7 +126,9 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
               style={{ background: d.color }}
             />
             <span className="text-[#1d1d1f] dark:text-[#f5f5f7] truncate flex-1">
-              {d.name}
+              {d.name.includes("(Options)") ? (
+                <>{d.name.replace(" (Options)", "")}<span className="opacity-60"> (Options)</span></>
+              ) : d.name}
             </span>
             <span className="text-[#86868b] tabular-nums text-right flex-shrink-0">
               {hidden ? "•••" : formatChartValue(d.value, currency, false)}

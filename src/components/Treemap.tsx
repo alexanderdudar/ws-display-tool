@@ -60,7 +60,7 @@ function CustomContent({ x = 0, y = 0, width = 0, height = 0, name = "", color =
           fontSize={fontSize}
           fontWeight={600}
         >
-          {truncateLabel(name, maxChars)}
+          {truncateLabel(name.replace(" (Options)", "+"), maxChars)}
         </text>
       )}
     </g>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, ReactElement } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
 import { Holding, Currency, SECURITY_TYPE_MAP, getAccountDisplayName } from "@/lib/types";
 import { aggregateBySymbol } from "@/lib/aggregate";
@@ -14,6 +14,21 @@ interface Props {
   currency: Currency;
   hidden: boolean;
   viewMode: ViewMode;
+}
+
+function CustomYTick({ x, y, payload }: { x: number; y: number; payload: { value: string } }): ReactElement {
+  const label = payload.value;
+  const hasOptions = label.includes("(Options)");
+  return (
+    <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={14} fill="var(--foreground)">
+      {hasOptions ? (
+        <>
+          <tspan>{label.replace(" (Options)", "")}</tspan>
+          <tspan fillOpacity={0.6}> (Options)</tspan>
+        </>
+      ) : label}
+    </text>
+  );
 }
 
 export function HoldingsSizeChart({ holdings, currency, hidden, viewMode }: Props) {
@@ -53,7 +68,7 @@ export function HoldingsSizeChart({ holdings, currency, hidden, viewMode }: Prop
   const labelWidth = useMemo(() => {
     if (data.length === 0) return 80;
     const longest = Math.max(...data.map((d) => d.symbol.length));
-    return Math.min(Math.max(longest * 8 + 12, 70), 170);
+    return Math.min(Math.max(longest * 9 + 16, 70), 200);
   }, [data]);
 
   return (
@@ -65,18 +80,18 @@ export function HoldingsSizeChart({ holdings, currency, hidden, viewMode }: Prop
             <XAxis
               type="number"
               tickFormatter={(v) => (hidden ? "•" : `$${(v / 1000).toFixed(0)}k`)}
-              tick={{ fontSize: 13, fill: "#86868b", textAnchor: "start" }}
+              tick={{ fontSize: 14, fill: "#86868b", textAnchor: "start" }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="symbol"
-              tick={{ fontSize: 14, fill: "var(--foreground)" }}
+              tick={(props: Record<string, unknown>) => <CustomYTick x={props.x as number} y={props.y as number} payload={props.payload as { value: string }} />}
               axisLine={false}
               tickLine={false}
               width={labelWidth}
-              tickMargin={12}
+              tickMargin={6}
             />
             <Tooltip
               formatter={(value, _name, props) => [`${props.payload.symbol} : ${formatChartValue(Number(value), currency, hidden)}`]}
