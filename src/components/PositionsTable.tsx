@@ -198,6 +198,17 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
           />
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setConsolidate(!consolidate)}
+            className={`flex items-center gap-1.5 text-[13px] font-medium transition-colors ${
+              consolidate
+                ? "text-[#0071e3]"
+                : "text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            Consolidate Accounts
+          </button>
           <div className="relative">
             <button
               onClick={() => setShowColumnPicker(!showColumnPicker)}
@@ -237,37 +248,15 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
               {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => (
                 <th
                   key={col.key}
-                  onClick={() => col.key === "account" ? undefined : handleSort(col.key)}
+                  onClick={() => handleSort(col.key)}
                   className="text-left py-2 px-2 text-[#86868b] font-medium cursor-pointer hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] select-none whitespace-nowrap"
                 >
-                  {col.key === "account" ? (
-                    <span className="inline-flex items-center gap-1.5">
-                      <span onClick={() => handleSort(col.key)} className="inline-flex items-center gap-1">
-                        {col.label}
-                        {sortKey === col.key && (
-                          sortDir === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                        )}
-                      </span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setConsolidate(!consolidate); }}
-                        className={`inline-flex items-center gap-1 text-[11px] font-medium transition-colors ${
-                          consolidate
-                            ? "text-[#0071e3]"
-                            : "text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
-                        }`}
-                      >
-                        <Layers className="w-3.5 h-3.5" />
-                        Consolidate
-                      </button>
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1">
-                      {col.label}
-                      {sortKey === col.key && (
-                        sortDir === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-                      )}
-                    </span>
-                  )}
+                  <span className="inline-flex items-center gap-1">
+                    {col.label}
+                    {sortKey === col.key && (
+                      sortDir === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+                    )}
+                  </span>
                 </th>
               ))}
             </tr>
