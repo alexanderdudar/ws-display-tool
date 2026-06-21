@@ -33,7 +33,7 @@ function truncateLabel(name: string, maxChars: number): string {
 }
 
 function CustomContent({ x = 0, y = 0, width = 0, height = 0, name = "", color = "#0071e3", depth = 0 }: TreemapContentProps) {
-  if (depth === 0) return null;
+  if (depth === 0 || width < 4 || height < 4) return null;
 
   const fontSize = width > 120 ? 15 : width > 80 ? 13 : 11;
   const maxChars = Math.floor(width / (fontSize * 0.6));
@@ -42,13 +42,11 @@ function CustomContent({ x = 0, y = 0, width = 0, height = 0, name = "", color =
   return (
     <g>
       <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
+        x={x + 1.25}
+        y={y + 1.25}
+        width={Math.max(0, width - 2.5)}
+        height={Math.max(0, height - 2.5)}
         fill={color}
-        stroke="none"
-        strokeWidth={0}
         rx={3}
       />
       {showLabel && (
