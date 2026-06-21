@@ -134,38 +134,28 @@ export function useFilters(holdings: Holding[]) {
 
   const toggleAccount = useCallback((account: string) => {
     setSelectedAccounts((prev) => {
-      if (prev.size === accounts.length) {
-        return new Set([account]);
-      }
       const next = new Set(prev);
       if (next.has(account)) next.delete(account);
       else next.add(account);
       return next;
     });
-  }, [accounts]);
+  }, []);
 
   const toggleType = useCallback((type: SecurityTypeLabel) => {
     setSelectedTypes((prev) => {
-      if (prev.size === securityTypes.length) {
-        return new Set([type]);
-      }
       const next = new Set(prev);
       if (next.has(type)) next.delete(type);
       else next.add(type);
       return next;
     });
-  }, [securityTypes]);
+  }, []);
 
   const selectAllAccounts = useCallback(() => {
-    setSelectedAccounts((prev) =>
-      prev.size === accounts.length ? new Set() : new Set(accounts)
-    );
+    setSelectedAccounts(new Set(accounts));
   }, [accounts]);
 
   const selectAllTypes = useCallback(() => {
-    setSelectedTypes((prev) =>
-      prev.size === securityTypes.length ? new Set() : new Set(securityTypes)
-    );
+    setSelectedTypes(new Set(securityTypes));
   }, [securityTypes]);
 
   const filtered = useMemo(() => {
