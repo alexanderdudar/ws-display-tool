@@ -6,6 +6,7 @@ import { Holding, Currency, SECURITY_TYPE_MAP, getAccountDisplayName } from "@/l
 import { aggregateBySymbol } from "@/lib/aggregate";
 import { getColorByIndex, getColorForSector, CATEGORY_COLORS } from "@/lib/colors";
 import { getValueInCurrency } from "@/lib/hooks";
+import { getETFBreakdown } from "@/lib/etf-breakdown";
 import { TOOLTIP_STYLE, TOOLTIP_ITEM_STYLE, TOOLTIP_LABEL_STYLE, formatChartValue } from "@/lib/chart-utils";
 import { ViewMode } from "./Dashboard";
 
@@ -48,11 +49,19 @@ export function HoldingsSizeChart({ holdings, currency, hidden, viewMode }: Prop
     const groups: Record<string, number> = {};
     for (const h of holdings) {
       const val = getValueInCurrency(h, currency);
-      let key: string;
-      if (viewMode === "sector") key = h.sector || "Other";
-      else if (viewMode === "account") key = getAccountDisplayName(h.accountName);
-      else key = SECURITY_TYPE_MAP[h.securityType] || h.securityType;
-      groups[key] = (groups[key] || 0) + val;
+      if (viewMode === "sector") {
+        const breakdown = getETFBreakdown(h.symbol);
+        if (breakdown) {
+          for (const [sector, weight] of Object.entries(breakdown)) {
+            groups[sector] = (groups[sector] || 0) + val * weight;
+          }
+        } else {
+          groups[h.sector || "Other"] = (groups[h.sector || "Other"] || 0) + val;
+        }
+      } else {
+        const key = viewMode === "account" ? getAccountDisplayName(h.accountName) : (SECURITY_TYPE_MAP[h.securityType] || h.securityType);
+        groups[key] = (groups[key] || 0) + val;
+      }
     }
 
     return Object.entries(groups)
