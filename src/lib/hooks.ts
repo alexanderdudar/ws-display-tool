@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Holding, Currency, SECURITY_TYPE_MAP, SecurityTypeLabel } from "./types";
 import { parseHoldingsCSV } from "./parse-csv";
+import { getSector } from "./sector-map";
 
 const STORAGE_KEY = "ws-display-tool-holdings-v2";
 const CURRENCY_KEY = "ws-display-tool-currency";
@@ -15,7 +16,8 @@ export function useHoldings() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setHoldings(JSON.parse(stored));
+        const parsed = JSON.parse(stored) as Holding[];
+        setHoldings(parsed.map((h) => ({ ...h, sector: getSector(h.symbol) })));
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }
