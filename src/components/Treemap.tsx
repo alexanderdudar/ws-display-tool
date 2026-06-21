@@ -47,8 +47,8 @@ function CustomContent({ x = 0, y = 0, width = 0, height = 0, name = "", color =
         width={width}
         height={height}
         fill={color}
-        stroke="rgba(0,0,0,0.15)"
-        strokeWidth={1}
+        stroke="currentColor"
+        strokeWidth={3}
         rx={3}
       />
       {showLabel && (
@@ -111,7 +111,7 @@ export function TreemapChart({ holdings, currency, hidden, viewMode }: Props) {
   }, [holdings, currency, viewMode]);
 
   return (
-    <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[18px] border border-black/5 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5 h-[420px] flex flex-col">
+    <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[18px] border border-black/5 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-5 h-[420px] flex flex-col text-[#f5f5f7] dark:text-black">
       <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsTreemap
