@@ -101,7 +101,7 @@ export function SummaryCards({ holdings, currency, hidden }: Props) {
       <Stat
         label="Top Gainer (Unrealized)"
         value={stats.topGainer.symbol}
-        sub={`+${stats.topGainer.pct.toFixed(1)}%|${formatMoney(stats.topGainer.pnl, currency)}`}
+        sub={`+${stats.topGainer.pct.toFixed(1)}%|${hidden ? "•••••" : formatMoney(stats.topGainer.pnl, currency)}`}
         hidden={false}
         color="text-green-600"
       />
@@ -109,7 +109,7 @@ export function SummaryCards({ holdings, currency, hidden }: Props) {
       <Stat
         label="Top Loser (Unrealized)"
         value={stats.topLoser.symbol}
-        sub={`${stats.topLoser.pct.toFixed(1)}%|${formatMoney(stats.topLoser.pnl, currency)}`}
+        sub={`${stats.topLoser.pct.toFixed(1)}%|${hidden ? "•••••" : formatMoney(stats.topLoser.pnl, currency)}`}
         hidden={false}
         color="text-red-500"
       />
