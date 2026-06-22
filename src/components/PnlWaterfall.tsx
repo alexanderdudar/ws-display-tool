@@ -35,7 +35,7 @@ export function PnlWaterfall({ holdings, currency, hidden, viewMode }: Props) {
   const data = useMemo(() => {
     if (viewMode === "holding") {
       const aggregated = aggregateBySymbol(holdings, currency)
-        .filter((p) => p.totalBookValue > 0 && Math.abs(p.totalPnl) > 0)
+        .filter((p) => Math.abs(p.totalPnl) > 0)
         .sort((a, b) => b.totalPnl - a.totalPnl);
 
       const top = aggregated.slice(0, 8);

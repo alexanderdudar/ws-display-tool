@@ -70,10 +70,11 @@ export function AllocationChart({ holdings, currency, hidden, viewMode: view }: 
   }, [holdings, currency, view]);
 
   const chartData = useMemo(() => {
-    if (data.length <= 15) return data;
+    const positive = data.filter((d) => d.value > 0);
+    if (positive.length <= 15) return positive;
 
-    const top = data.slice(0, 14);
-    const rest = data.slice(14);
+    const top = positive.slice(0, 14);
+    const rest = positive.slice(14);
     const otherValue = rest.reduce((s, d) => s + d.value, 0);
     return [...top, { name: "Other", value: otherValue, color: "#636366" }];
   }, [data]);

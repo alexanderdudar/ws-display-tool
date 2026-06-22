@@ -114,7 +114,7 @@ export function PositionsTable({ holdings, currency, hidden }: Props) {
         const value = getValueInCurrency(h, currency);
         const pnl = getPnlInCurrency(h, currency);
         const bv = currency === "CAD" ? h.bookValueCAD : h.bookValueMarket;
-        const pnlPct = bv > 0 ? (pnl / bv) * 100 : 0;
+        const pnlPct = Math.abs(bv) > 0 ? (pnl / Math.abs(bv)) * 100 : 0;
         return { holding: h, value, pnl, pnlPct };
       })
       .sort((a, b) => {

@@ -7,12 +7,34 @@ import { getSector } from "./sector-map";
 
 const STORAGE_KEY = "ws-display-tool-holdings-v2";
 const CURRENCY_KEY = "ws-display-tool-currency";
+const FX_KEY = "ws-display-tool-fx-rate";
+
+function deriveUsdCadRate(holdings: Holding[]): number {
+  let sumCAD = 0;
+  let sumMarket = 0;
+  for (const h of holdings) {
+    if (h.marketValueCurrency === "USD" && h.bookValueCAD > 0 && h.bookValueMarket > 0) {
+      sumCAD += h.bookValueCAD;
+      sumMarket += h.bookValueMarket;
+    }
+  }
+  return sumMarket > 0 ? sumCAD / sumMarket : 1.38;
+}
+
+let _usdCadRate = 1.38;
+
+export function getUsdCadRate(): number {
+  return _usdCadRate;
+}
 
 export function useHoldings() {
   const [holdings, setHoldings] = useState<Holding[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    const storedRate = localStorage.getItem(FX_KEY);
+    if (storedRate) _usdCadRate = parseFloat(storedRate);
+
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
@@ -27,6 +49,9 @@ export function useHoldings() {
 
   const uploadCSV = useCallback((csvText: string) => {
     const parsed = parseHoldingsCSV(csvText);
+    const rate = deriveUsdCadRate(parsed);
+    _usdCadRate = rate;
+    localStorage.setItem(FX_KEY, rate.toString());
     setHoldings(parsed);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
   }, []);
@@ -153,11 +178,15 @@ export function useFilters(holdings: Holding[]) {
   }, []);
 
   const selectAllAccounts = useCallback(() => {
-    setSelectedAccounts(new Set(accounts));
+    setSelectedAccounts((prev) =>
+      prev.size === accounts.length ? new Set() : new Set(accounts)
+    );
   }, [accounts]);
 
   const selectAllTypes = useCallback(() => {
-    setSelectedTypes(new Set(securityTypes));
+    setSelectedTypes((prev) =>
+      prev.size === securityTypes.length ? new Set() : new Set(securityTypes)
+    );
   }, [securityTypes]);
 
   const filtered = useMemo(() => {
@@ -184,18 +213,19 @@ export function useFilters(holdings: Holding[]) {
 }
 
 export function getValueInCurrency(holding: Holding, currency: Currency): number {
+  const rate = _usdCadRate;
+  const isCAD = holding.marketValueCurrency === "CAD";
   if (currency === "CAD") {
-    return holding.bookValueCAD > 0
-      ? (holding.marketValue / holding.bookValueMarket) * holding.bookValueCAD
-      : holding.marketValue * 1.37;
+    return isCAD ? holding.marketValue : holding.marketValue * rate;
   }
-  return holding.marketValue;
+  return isCAD ? holding.marketValue / rate : holding.marketValue;
 }
 
 export function getPnlInCurrency(holding: Holding, currency: Currency): number {
+  const rate = _usdCadRate;
+  const isCAD = holding.unrealizedReturnCurrency === "CAD";
   if (currency === "CAD") {
-    const ratio = holding.bookValueCAD / (holding.bookValueMarket || 1);
-    return holding.unrealizedReturn * ratio;
+    return isCAD ? holding.unrealizedReturn : holding.unrealizedReturn * rate;
   }
-  return holding.unrealizedReturn;
+  return isCAD ? holding.unrealizedReturn / rate : holding.unrealizedReturn;
 }

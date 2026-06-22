@@ -54,6 +54,6 @@ export function aggregateBySymbol(
     totalValue: data.value,
     totalPnl: data.pnl,
     totalBookValue: data.bookValue,
-    pnlPct: data.bookValue > 0 ? (data.pnl / data.bookValue) * 100 : 0,
+    pnlPct: Math.abs(data.bookValue) > 0 ? (data.pnl / Math.abs(data.bookValue)) * 100 : 0,
   }));
 }
