@@ -9,7 +9,15 @@ const STORAGE_KEY = "ws-display-tool-holdings-v2";
 const CURRENCY_KEY = "ws-display-tool-currency";
 const FX_KEY = "ws-display-tool-fx-rate";
 
-function deriveUsdCadRate(holdings: Holding[]): number {
+const DEFAULT_USD_CAD = 1.38;
+const MIN_REALISTIC_RATE = 1.2;
+const MAX_REALISTIC_RATE = 1.6;
+
+function isRealisticRate(rate: number): boolean {
+  return rate >= MIN_REALISTIC_RATE && rate <= MAX_REALISTIC_RATE;
+}
+
+export function deriveUsdCadRate(holdings: Holding[]): number {
   let sumCAD = 0;
   let sumMarket = 0;
   for (const h of holdings) {
@@ -18,7 +26,21 @@ function deriveUsdCadRate(holdings: Holding[]): number {
       sumMarket += h.bookValueMarket;
     }
   }
-  return sumMarket > 0 ? sumCAD / sumMarket : 1.38;
+  if (sumMarket > 0) {
+    const rate = sumCAD / sumMarket;
+    if (isRealisticRate(rate)) return rate;
+  }
+
+  // Fallback: try deriving from any holding that has both CAD and market book values
+  // in different currencies
+  for (const h of holdings) {
+    if (h.bookValueMarketCurrency !== "CAD" && h.bookValueCAD > 0 && h.bookValueMarket > 0) {
+      const rate = h.bookValueCAD / h.bookValueMarket;
+      if (isRealisticRate(rate)) return rate;
+    }
+  }
+
+  return DEFAULT_USD_CAD;
 }
 
 let _usdCadRate = 1.38;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Holding } from "@/lib/types";
-import { getValueInCurrency, getPnlInCurrency } from "@/lib/hooks";
+import { getValueInCurrency, getPnlInCurrency, deriveUsdCadRate } from "@/lib/hooks";
 import { aggregateBySymbol } from "@/lib/aggregate";
 
 function makeHolding(overrides: Partial<Holding>): Holding {
@@ -246,5 +246,168 @@ describe("chart display correctness", () => {
         }
       }
     }
+  });
+});
+
+describe("deriveUsdCadRate", () => {
+  it("derives rate from weighted average of USD holdings book values", () => {
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 13800, bookValueMarket: 10000,
+      }),
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 6900, bookValueMarket: 5000,
+      }),
+    ];
+    // Weighted: (13800 + 6900) / (10000 + 5000) = 20700 / 15000 = 1.38
+    expect(deriveUsdCadRate(holdings)).toBeCloseTo(1.38, 2);
+  });
+
+  it("returns fallback 1.38 when portfolio has zero USD holdings", () => {
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "CAD", bookValueCAD: 10000, bookValueMarket: 10000,
+        bookValueMarketCurrency: "CAD",
+      }),
+      makeHolding({
+        marketValueCurrency: "CAD", bookValueCAD: 5000, bookValueMarket: 5000,
+        bookValueMarketCurrency: "CAD",
+      }),
+    ];
+    expect(deriveUsdCadRate(holdings)).toBe(1.38);
+  });
+
+  it("handles portfolio with only options (zero book values) by using fallback", () => {
+    const holdings = [
+      makeHolding({
+        symbol: "AAPL 260718C00200000", securityType: "OPTION",
+        marketValueCurrency: "USD", bookValueCAD: 0, bookValueMarket: 0,
+      }),
+      makeHolding({
+        symbol: "MSFT 260718C00400000", securityType: "OPTION",
+        marketValueCurrency: "USD", bookValueCAD: 0, bookValueMarket: 0,
+      }),
+    ];
+    expect(deriveUsdCadRate(holdings)).toBe(1.38);
+  });
+
+  it("handles portfolio with one tiny USD holding — still derives from it", () => {
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "CAD", bookValueCAD: 100000, bookValueMarket: 100000,
+        bookValueMarketCurrency: "CAD",
+      }),
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 140, bookValueMarket: 100,
+      }),
+    ];
+    // Should use the one USD holding: 140/100 = 1.40
+    expect(deriveUsdCadRate(holdings)).toBeCloseTo(1.40, 2);
+  });
+
+  it("ignores USD holdings with zero book value CAD", () => {
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 0, bookValueMarket: 5000,
+      }),
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 7000, bookValueMarket: 5000,
+      }),
+    ];
+    // Only uses the one with valid CAD book value: 7000/5000 = 1.40
+    expect(deriveUsdCadRate(holdings)).toBeCloseTo(1.40, 2);
+  });
+
+  it("ignores USD holdings with zero book value market", () => {
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 5000, bookValueMarket: 0,
+      }),
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 6900, bookValueMarket: 5000,
+      }),
+    ];
+    // Only uses valid one: 6900/5000 = 1.38
+    expect(deriveUsdCadRate(holdings)).toBeCloseTo(1.38, 2);
+  });
+
+  it("uses fallback for non-USD book value when no USD marketValue holdings exist", () => {
+    // Someone with only CAD ETFs but one has bookValueMarketCurrency = USD
+    // (e.g. VFV which tracks S&P but trades in CAD)
+    const holdings = [
+      makeHolding({
+        symbol: "VFV", marketValueCurrency: "CAD",
+        bookValueCAD: 10000, bookValueMarket: 10000,
+        bookValueMarketCurrency: "CAD",
+      }),
+    ];
+    expect(deriveUsdCadRate(holdings)).toBe(1.38);
+  });
+
+  it("derives from bookValueMarketCurrency fallback when no USD marketValue exists", () => {
+    // A holding that has market value in CAD but book value in a different currency
+    const holdings = [
+      makeHolding({
+        symbol: "VOO", marketValueCurrency: "CAD",
+        bookValueCAD: 13800, bookValueMarket: 10000,
+        bookValueMarketCurrency: "USD",
+      }),
+    ];
+    // Falls through primary check (marketValueCurrency !== USD)
+    // Hits fallback: bookValueMarketCurrency !== CAD, so uses bookValueCAD/bookValueMarket
+    expect(deriveUsdCadRate(holdings)).toBeCloseTo(1.38, 2);
+  });
+
+  it("produces a rate in reasonable range (1.2 - 1.6) for typical portfolios", () => {
+    const rate = deriveUsdCadRate(TFSA_HOLDINGS);
+    expect(rate).toBeGreaterThan(1.2);
+    expect(rate).toBeLessThan(1.6);
+  });
+
+  it("large CAD portfolio with single small USD position still gets valid rate", () => {
+    const holdings = [
+      // Large CAD positions
+      makeHolding({ symbol: "VFV", marketValueCurrency: "CAD", bookValueCAD: 50000, bookValueMarket: 50000, bookValueMarketCurrency: "CAD" }),
+      makeHolding({ symbol: "QQC", marketValueCurrency: "CAD", bookValueCAD: 30000, bookValueMarket: 30000, bookValueMarketCurrency: "CAD" }),
+      makeHolding({ symbol: "XIU", marketValueCurrency: "CAD", bookValueCAD: 20000, bookValueMarket: 20000, bookValueMarketCurrency: "CAD" }),
+      // Single small USD position
+      makeHolding({ symbol: "AAPL", marketValueCurrency: "USD", bookValueCAD: 700, bookValueMarket: 500 }),
+    ];
+    const rate = deriveUsdCadRate(holdings);
+    // Should derive from the AAPL position: 700/500 = 1.40
+    expect(rate).toBeCloseTo(1.40, 2);
+  });
+
+  it("empty portfolio returns fallback", () => {
+    expect(deriveUsdCadRate([])).toBe(1.38);
+  });
+
+  it("does NOT return ~1.0 when CAD holdings have bookValueMarketCurrency defaulting to USD", () => {
+    // This simulates a bug where a CAD holding (QQC) has bookValueMarketCurrency
+    // incorrectly set to "USD" because the CSV field was empty.
+    // bookValueCAD and bookValueMarket would be equal (both in CAD),
+    // giving a false ratio of 1.0
+    const holdings = [
+      makeHolding({
+        symbol: "QQC", marketValueCurrency: "CAD",
+        bookValueCAD: 16000, bookValueMarket: 16000,
+        bookValueMarketCurrency: "USD", // wrong! should be CAD
+      }),
+    ];
+    const rate = deriveUsdCadRate(holdings);
+    // Should NOT be 1.0 — the fallback should reject ratios close to 1.0
+    // for the USD/CAD pair since that's not realistic
+    expect(rate).toBeGreaterThan(1.2);
+  });
+
+  it("rejects derived rate below 1.2 as unrealistic for USD/CAD", () => {
+    // If book values produce a ratio < 1.2, it's clearly wrong data
+    const holdings = [
+      makeHolding({
+        marketValueCurrency: "USD", bookValueCAD: 1000, bookValueMarket: 1000,
+      }),
+    ];
+    const rate = deriveUsdCadRate(holdings);
+    expect(rate).toBeGreaterThan(1.2);
   });
 });
