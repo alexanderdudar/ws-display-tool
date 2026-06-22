@@ -38,7 +38,7 @@ export function HoldingsSizeChart({ holdings, currency, hidden, viewMode }: Prop
       return aggregateBySymbol(holdings, currency)
         .filter((p) => p.totalValue > 0)
         .sort((a, b) => b.totalValue - a.totalValue)
-        .slice(0, 10)
+        .slice(0, 12)
         .map((p, i) => ({
           symbol: p.symbol,
           value: p.totalValue,

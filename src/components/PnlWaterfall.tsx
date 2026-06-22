@@ -38,8 +38,8 @@ export function PnlWaterfall({ holdings, currency, hidden, viewMode }: Props) {
         .filter((p) => Math.abs(p.totalPnl) > 0)
         .sort((a, b) => b.totalPnl - a.totalPnl);
 
-      const top = aggregated.slice(0, 5);
-      const bottom = aggregated.slice(-5);
+      const top = aggregated.slice(0, 6);
+      const bottom = aggregated.slice(-6);
       const combined = [...top, ...bottom.filter((b) => !top.includes(b))];
 
       return combined
